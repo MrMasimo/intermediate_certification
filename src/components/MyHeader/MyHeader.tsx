@@ -1,10 +1,10 @@
 import {useAuthContext} from "../../context/authContext";
-import {useNavigate} from "react-router-dom";
-import {NavLink} from "react-router-dom";
-import {Button, Flex, Menu, MenuProps} from "antd";
+import {NavLink, useNavigate, useLocation} from "react-router-dom";
+import {Button, Flex, Menu, MenuProps} from "antd"
 import userImg from '../../img/user.png';
 
 export default function MyHeader() {
+    const location = useLocation();
     const navigate = useNavigate();
     const {isLogin, user, logout} = useAuthContext()
 
@@ -16,24 +16,28 @@ export default function MyHeader() {
 
     let topNavItems: MenuProps['items'] = [
         {
-            key: 'home',
+            key: '/',
             label: <NavLink to="/">Главная</NavLink>
         },
     ];
 
     if (isLogin) {
         topNavItems.push({
-            key: 'pollution',
+            key: '/pollution',
             label: <NavLink to="/pollution">Загрязнения</NavLink>
+        })
+        topNavItems.push({
+            key: '/city',
+            label: <NavLink to="/city">Информация о городе</NavLink>
         })
     } else {
         topNavItems.push(...[
             {
-                key: 'login',
+                key: '/login',
                 label: <NavLink to="/login">Вход</NavLink>
             },
             {
-                key: 'registration',
+                key: '/registration',
                 label: <NavLink to="/registration">Регистрация</NavLink>
             },
         ])
@@ -45,11 +49,11 @@ export default function MyHeader() {
                 items={topNavItems}
                 mode="horizontal"
                 theme="dark"
-                defaultSelectedKeys={['home']}
+                selectedKeys={[location.pathname]}
             />
 
             {isLogin && user && <Flex gap={'middle'} align={'center'}>
-                <img
+            <img
                     src={userImg}
                     alt={JSON.parse(user).email}
                     title={JSON.parse(user).email}

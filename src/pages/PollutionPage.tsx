@@ -255,7 +255,7 @@ export default function PollutionPage() {
         height: 400,
         xField: 'address',
         yField: 'value',
-        stack: false,
+        stack: true,
         colorField: 'parameter',
         axis: {
             x: {
@@ -269,7 +269,7 @@ export default function PollutionPage() {
 
     return (
         <>
-            <h1>Уровень загрязнения</h1>
+            <h1>Загрязнения</h1>
             <p>Введите нужный адрес и нажмите на кнопку
                 "Получить данные".</p>
 

@@ -9,6 +9,9 @@ import ErrorPage from "./pages/ErrorPage";
 import {createBrowserRouter, RouterProvider, Navigate} from "react-router-dom";
 import {AuthProvider, useAuthContext} from "./context/authContext";
 import './normalize.css';
+import CityPage from "./pages/CityPage";
+import { Provider } from 'react-redux'
+import {store} from "./store";
 
 const PrivateRoute = ({children}: {children: React.ReactElement}) => {
     const { isLogin } = useAuthContext()
@@ -34,12 +37,16 @@ const router = createBrowserRouter([
                 element: <PrivateRoute><PollutionPage /></PrivateRoute>,
             },
             {
-                path: "/login",
-                element: <LoginPage />,
+                path: "/city",
+                element: <PrivateRoute><CityPage /></PrivateRoute>,
             },
             {
                 path: "/registration",
                 element: <RegistrationPage />,
+            },
+            {
+                path: "/login",
+                element: <LoginPage />,
             },
             {
                 path: "*",
@@ -50,7 +57,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <Provider store={store}>
         <AuthProvider>
             <RouterProvider router={router}/>
         </AuthProvider>
+    </Provider>
 );
