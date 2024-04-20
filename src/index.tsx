@@ -1,19 +1,56 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import App from './components/App/App';
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegistrationPage from "./pages/RegistrationPage";
+import PollutionPage from "./pages/PollutionPage";
+import ErrorPage from "./pages/ErrorPage";
+import {createBrowserRouter, RouterProvider, Navigate} from "react-router-dom";
+import {AuthProvider, useAuthContext} from "./context/authContext";
+import './normalize.css';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const PrivateRoute = ({children}: {children: React.ReactElement}) => {
+    const { isLogin } = useAuthContext()
+    if (!isLogin) {
+        return <Navigate to="/login"/>
+    }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    return children
+}
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <App/>,
+        errorElement: <ErrorPage/>,
+        children: [
+            {
+                index: true,
+                element: <HomePage />,
+            },
+            {
+                path: "/pollution",
+                element: <PrivateRoute><PollutionPage /></PrivateRoute>,
+            },
+            {
+                path: "/login",
+                element: <LoginPage />,
+            },
+            {
+                path: "/registration",
+                element: <RegistrationPage />,
+            },
+            {
+                path: "*",
+                element: <ErrorPage />,
+            },
+        ],
+    },
+]);
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+        <AuthProvider>
+            <RouterProvider router={router}/>
+        </AuthProvider>
+);
